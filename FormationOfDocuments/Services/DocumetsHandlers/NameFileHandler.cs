@@ -9,12 +9,12 @@ namespace FormationOfDocuments.Services.DocumetsHandlers
     // Я так и не смог придумать адекватное название для этого класса
     public abstract class NameFileHandler
     {
-        protected string _filepathTemplateFile;
+        protected string _pathTemplateFile;
         private readonly ILogger _logger;
 
         public NameFileHandler(string filepathTemplateFile, ILogger logger)
         {
-            _filepathTemplateFile = filepathTemplateFile;
+            _pathTemplateFile = filepathTemplateFile;
             _logger = logger;
         }
 
@@ -29,6 +29,6 @@ namespace FormationOfDocuments.Services.DocumetsHandlers
         /// </summary>
         /// <param name="items"></param>
         /// <param name="pathCreationFile"></param>
-        public abstract void WriteValuesByFields(List<Item> items, string pathCreationFile);
+        public abstract void WriteValuesByFields(List<BookmarkReplacement> items, string pathCreationFile);
     }
 }

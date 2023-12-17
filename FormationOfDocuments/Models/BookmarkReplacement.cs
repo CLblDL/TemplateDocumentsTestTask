@@ -9,9 +9,9 @@ namespace FormationOfDocuments.Models
     /// <summary>
     /// Содержит элемент заполненого поля
     /// </summary>
-    public class Item
+    public class BookmarkReplacement
     {
-        public Item(string nameFields, string content)
+        public BookmarkReplacement(string nameFields, string content)
         {
             NameFields = nameFields;
             Content = content;

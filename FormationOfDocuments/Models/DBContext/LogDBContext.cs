@@ -22,7 +22,7 @@ namespace FormationOfDocuments.Models.DBContext
             if (!optionsBuilder.IsConfigured)
             {
                 //Подключаемся к базе данных
-                optionsBuilder.UseSqlServer($"Server={hostSQL};Database={database};User ID={userSQL};Password={passSQL}");
+                optionsBuilder.UseSqlServer($"Server={hostSQL};Database={database};Trusted_connection=True;User ID={userSQL};Password={passSQL}");
             }
         }
     }

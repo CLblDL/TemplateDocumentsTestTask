@@ -15,7 +15,7 @@ namespace FormationOfDocuments.Services.DocumetsHandlers
             //Необходимо открыть файл на чтение и получить имена полей для заполнения и положить их в список templateFields
         }
 
-        public override void WriteValuesByFields(List<Item> items, string pathCreationFile)
+        public override void WriteValuesByFields(List<BookmarkReplacement> items, string pathCreationFile)
         {
 
         }

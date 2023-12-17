@@ -10,7 +10,7 @@ namespace FormationOfDocuments.Services
     {
         private string _pathTemplateFile;
         private string _fileExtension;
-        private List<string> _templateFields;
+        private List<string> _templateFields = new();
         private NameFileHandler _nameFileHandler;
         private readonly ILogger _logger;
 
@@ -36,11 +36,11 @@ namespace FormationOfDocuments.Services
                 //в котором будет создаваться необходимый экзмепляр обработчика формата, но от этого может ухудшиться чтение кода 
                 switch (_fileExtension)
                 {
-                    case "docx":
+                    case ".docx":
                         _nameFileHandler = new DocxFileHandler(_pathTemplateFile, _logger);
                         _nameFileHandler.GetTemplateFields(_templateFields);
                         break;
-                    case "rtf":
+                    case ".rtf":
                         _nameFileHandler = new RtfFileHandler(_pathTemplateFile, _logger);
                         _nameFileHandler.GetTemplateFields(_templateFields);
                         break;
@@ -76,7 +76,7 @@ namespace FormationOfDocuments.Services
         /// </summary>
         /// <param name="items"></param>
         /// <param name="pathCreationFile"></param>
-        public async Task WriteValuesByFields(List<Item> items, string pathCreationFile)
+        public async Task WriteValuesByFields(List<BookmarkReplacement> items, string pathCreationFile)
         {
             _nameFileHandler.WriteValuesByFields(items, pathCreationFile);
             _logger.Information("На основе щаблона был создан файл");
@@ -91,7 +91,7 @@ namespace FormationOfDocuments.Services
         /// <param name="subject"></param>
         /// <param name="body"></param>
         /// <returns></returns>
-        public async Task SendByMail(List<Item> items, MailAddress sender, MailAddress recipient, string subject, string body)
+        public async Task SendByMail(List<BookmarkReplacement> items, MailAddress sender, MailAddress recipient, string subject, string body)
         {
             // Не успел посмотреть отличается ли отрпавка писем на разлчиные почтовые службы 
             _logger.Information("Попытка отправить документ по почте");

@@ -2,6 +2,9 @@
 using Serilog;
 using FormationOfDocuments.Models.DBContext;
 using Serilog.Events;
+using FormationOfDocuments.Services;
+using DocumentFormat.OpenXml.Spreadsheet;
+using FormationOfDocuments.Models;
 
 namespace FormationOfDocuments
 {
@@ -18,9 +21,26 @@ namespace FormationOfDocuments
                     .Filter.ByIncludingOnly(evt => evt.Level == LogEventLevel.Information)
                     .WriteTo.MSSqlServer(
                         connectionString: dbContext.Database.GetDbConnection().ConnectionString,
-                        tableName: "YourLogsTable",
+                        tableName: "Logs",
                         autoCreateSqlTable: true))
                 .CreateLogger();
+
+            DocumentHandler documentHandler = new DocumentHandler("C:\\Users\\Daniil\\Desktop\\TestWordTemplate.docx", logger);
+            var documents = documentHandler.GetTemplateFields();
+
+            foreach( var document in documents ) 
+            {
+                Console.WriteLine(document);
+                Console.WriteLine("--------------");
+            }
+
+            List<BookmarkReplacement> items = new List<BookmarkReplacement>()
+            {
+                new BookmarkReplacement("имя", "Daniil"),
+                new BookmarkReplacement("количесвто_лет", "22")           
+            };
+
+            documentHandler.WriteValuesByFields(items, "C:\\Users\\Daniil\\Desktop\\NewTestWordTemplate.docx").Wait();
        }
     }    
 }
