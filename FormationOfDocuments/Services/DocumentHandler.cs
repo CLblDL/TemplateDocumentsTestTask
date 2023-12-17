@@ -61,6 +61,7 @@ namespace FormationOfDocuments.Services
             {
                 _logger.Error(string.Format("При открытии файла произошла ошибка ввода-вывода. Ошибка {0}", ex.Message));
                 //При открытии файла произошла ошибка ввода-вывода.
+                //Чаше всего когда файл открыт, надо предложить пользователю закрыть файлы и поробовать снова
                 throw;
             }
             catch (Exception ex)
@@ -92,14 +93,14 @@ namespace FormationOfDocuments.Services
         /// <param name="subject"></param>
         /// <param name="body"></param>
         /// <returns></returns>
-        public async Task SendByMail(List<IDocumentElement> items, MailAddress sender, MailAddress recipient, string subject, string body)
+        public async Task SendByMail(List<IDocumentElement> items, string sender, string password, string recipient, string subject, string body)
         {
             // Не успел посмотреть отличается ли отрпавка писем на разлчиные почтовые службы 
             _logger.Information("Попытка отправить документ по почте");
             string defoltPath = "";
             _nameFileHandler.WriteValuesByFields(items, defoltPath);
 
-            EmailMessageConstructor emailMessageConstructor = new EmailMessageConstructor(sender, recipient, subject, body, defoltPath, _logger);
+            EmailMessageConstructor emailMessageConstructor = new EmailMessageConstructor(sender,password, recipient, subject, body, defoltPath, _logger);
             _logger.Information("Пользователь отправил документ по почте");
         }
     }

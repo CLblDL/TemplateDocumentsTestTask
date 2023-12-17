@@ -38,7 +38,6 @@ namespace FormationOfDocuments.Services.DocumetsHandlers
                         };
 
                         templateFields.Add(bookmark1);
-                        Console.WriteLine("Закладка: " + bookmark1.Name);
                     }
                 }
 
@@ -46,7 +45,6 @@ namespace FormationOfDocuments.Services.DocumetsHandlers
 
                 List<string> controlIds = GetAllSdtBlockIds(doc);
 
-                Console.WriteLine("Идентификаторы текстовых полей формы:");
                 foreach (var controlId in controlIds)
                 {
                     ContentControl contentControl = new ContentControl()
@@ -54,12 +52,16 @@ namespace FormationOfDocuments.Services.DocumetsHandlers
                         Name = controlId
                     };
                     templateFields.Add(contentControl);
-                    Console.WriteLine(controlId);
                 }
             }
         }
 
-        static List<string> GetAllSdtBlockIds(WordprocessingDocument doc)
+        /// <summary>
+        /// Возврашает список всех элементов управления содержимым
+        /// </summary>
+        /// <param name="doc"></param>
+        /// <returns></returns>
+        private List<string> GetAllSdtBlockIds(WordprocessingDocument doc)
         {
             var sdtElements = doc.MainDocumentPart.Document.Descendants<SdtBlock>();
             List<string> controlIds = new List<string>();
@@ -76,8 +78,12 @@ namespace FormationOfDocuments.Services.DocumetsHandlers
             return controlIds;
         }
 
-
-        static BookmarkStart[] GetBookmarks(OpenXmlElement element)
+        /// <summary>
+        /// Возврашает массив всех закладок
+        /// </summary>
+        /// <param name="element"></param>
+        /// <returns></returns>
+        private BookmarkStart[] GetBookmarks(OpenXmlElement element)
         {
             var bookmarks = element.Elements<BookmarkStart>().ToList();
 
@@ -102,7 +108,6 @@ namespace FormationOfDocuments.Services.DocumetsHandlers
                 }
 
                 doc.MainDocumentPart.Document.Save();
-                Console.WriteLine("Новый файл создан");
             }
         }
     }

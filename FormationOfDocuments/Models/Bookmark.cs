@@ -22,7 +22,6 @@ namespace FormationOfDocuments.Models
 
             if (bookmarkStart != null)
             {
-                // Очищаем содержимое закладки и добавляем новый текст
                 bookmarkStart.Parent.Descendants<BookmarkEnd>()
                     .Where(b => b.Id == bookmarkStart.Id)
                     .FirstOrDefault()?.Remove();
@@ -39,12 +38,12 @@ namespace FormationOfDocuments.Models
         }
 
         /// <summary>
-        /// Рекурсивная функция для поиска закладки по имени
+        /// Рекурсивный метод для поиска закладки по имени
         /// </summary>
         /// <param name="element"></param>
         /// <param name="bookmarkName"></param>
         /// <returns></returns>
-        static BookmarkStart FindBookmark(OpenXmlElement element, string bookmarkName)
+        private BookmarkStart FindBookmark(OpenXmlElement element, string bookmarkName)
         {
             return element.Descendants<BookmarkStart>()
                 .Where(b => b.Name == bookmarkName)

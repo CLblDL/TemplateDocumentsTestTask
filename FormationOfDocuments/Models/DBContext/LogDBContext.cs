@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Configuration;
 using Microsoft.EntityFrameworkCore;
+using Serilog;
 
 namespace FormationOfDocuments.Models.DBContext
 {
@@ -22,7 +23,8 @@ namespace FormationOfDocuments.Models.DBContext
             if (!optionsBuilder.IsConfigured)
             {
                 //Подключаемся к базе данных
-                optionsBuilder.UseSqlServer($"Server={hostSQL};Database={database};Trusted_connection=True;User ID={userSQL};Password={passSQL}");
+                optionsBuilder.UseSqlServer($"Server={hostSQL};Database={database};Trusted_connection=True;Integrated Security=true;User ID={userSQL};Password={passSQL}");
+                //optionsBuilder.UseSqlServer($"Server=(localdb)\\mssqllocaldb;Database={database};Trusted_Connection=True;MultipleActiveResultSets=true;");
             }
         }
     }

@@ -29,7 +29,13 @@ namespace FormationOfDocuments.Models
             }
         }
 
-        static SdtElement GetSdtElementById(WordprocessingDocument doc, string controlId)
+        /// <summary>
+        /// Метод для поиска контролов по имени
+        /// </summary>
+        /// <param name="doc"></param>
+        /// <param name="controlId"></param>
+        /// <returns></returns>
+        private SdtElement GetSdtElementById(WordprocessingDocument doc, string controlId)
         {
             var sdtElements = doc.MainDocumentPart.Document.Descendants<SdtElement>();
             return sdtElements.FirstOrDefault(sdt => sdt.SdtProperties.GetFirstChild<Tag>()?.Val == controlId);

@@ -15,8 +15,10 @@ namespace FormationOfDocuments
         {
             using var dbContext = new LogDBContext();
             // Логер подлкючается к таблице куда надо писать логи, не успел до конца разобраться с этой библитотекой 
+
             var logger = Log.Logger = new LoggerConfiguration()
                 .MinimumLevel.Information()
+                .WriteTo.Console()
                 .WriteTo.Logger(lc => lc
                     .Filter.ByIncludingOnly(evt => evt.Level == LogEventLevel.Information)
                     .WriteTo.MSSqlServer(
