@@ -1,4 +1,5 @@
-﻿using FormationOfDocuments.Models;
+﻿using FormationOfDocuments.interfaces;
+using FormationOfDocuments.Models;
 using Serilog;
 
 namespace FormationOfDocuments.Services.DocumetsHandlers
@@ -10,12 +11,12 @@ namespace FormationOfDocuments.Services.DocumetsHandlers
 
         }
 
-        public override void GetTemplateFields(List<string> templateFields)
+        public override void GetTemplateFields(List<IDocumentElement> templateFields)
         {
             //Необходимо открыть файл на чтение и получить имена полей для заполнения и положить их в список templateFields
         }
 
-        public override void WriteValuesByFields(List<BookmarkReplacement> items, string pathCreationFile)
+        public override void WriteValuesByFields(List<IDocumentElement> items, string pathCreationFile)
         {
 
         }

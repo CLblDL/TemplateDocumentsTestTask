@@ -1,11 +1,15 @@
 ﻿using DocumentFormat.OpenXml;
+using DocumentFormat.OpenXml.Drawing.Charts;
+using DocumentFormat.OpenXml.ExtendedProperties;
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Wordprocessing;
+using FormationOfDocuments.interfaces;
 using FormationOfDocuments.Models;
 using Serilog;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 
 namespace FormationOfDocuments.Services.DocumetsHandlers
 {
@@ -16,7 +20,7 @@ namespace FormationOfDocuments.Services.DocumetsHandlers
 
         }
 
-        public override void GetTemplateFields(List<string> templateFields)
+        public override void GetTemplateFields(List<IDocumentElement> templateFields)
         {
             //Необходимо открыть файл на чтение и получить имена полей для заполнения и положить их в список templateFields
             using (WordprocessingDocument doc = WordprocessingDocument.Open(_pathTemplateFile, false))
@@ -24,17 +28,54 @@ namespace FormationOfDocuments.Services.DocumetsHandlers
                 // Получаем коллекцию закладок из основного текста документа
                 var bookmarks = GetBookmarks(doc.MainDocumentPart.Document.Body);
 
-                // Теперь у тебя есть коллекция закладок для дальнейшей обработки
                 foreach (var bookmark in bookmarks)
                 {
                     if (bookmark.Name != "_GoBack")
                     {
-                        templateFields.Add(bookmark.Name);
-                        Console.WriteLine("Закладка: " + bookmark.Name);
+                        Bookmark bookmark1 = new Bookmark() 
+                        {
+                            Name = bookmark.Name
+                        };
+
+                        templateFields.Add(bookmark1);
+                        Console.WriteLine("Закладка: " + bookmark1.Name);
                     }
+                }
+
+                //Помимо закладок необходимо получить "элементы управления содержимым" 
+
+                List<string> controlIds = GetAllSdtBlockIds(doc);
+
+                Console.WriteLine("Идентификаторы текстовых полей формы:");
+                foreach (var controlId in controlIds)
+                {
+                    ContentControl contentControl = new ContentControl()
+                    {
+                        Name = controlId
+                    };
+                    templateFields.Add(contentControl);
+                    Console.WriteLine(controlId);
                 }
             }
         }
+
+        static List<string> GetAllSdtBlockIds(WordprocessingDocument doc)
+        {
+            var sdtElements = doc.MainDocumentPart.Document.Descendants<SdtBlock>();
+            List<string> controlIds = new List<string>();
+
+            foreach (var sdtBlock in sdtElements)
+            {
+                var tag = sdtBlock.Descendants<Tag>().FirstOrDefault();
+                if (tag != null)
+                {
+                    controlIds.Add(tag.Val);
+                }
+            }
+
+            return controlIds;
+        }
+
 
         static BookmarkStart[] GetBookmarks(OpenXmlElement element)
         {
@@ -48,7 +89,7 @@ namespace FormationOfDocuments.Services.DocumetsHandlers
             return bookmarks.ToArray();
         }
 
-        public override void WriteValuesByFields(List<BookmarkReplacement> items, string pathCreationFile)
+        public override void WriteValuesByFields(List<IDocumentElement> items, string pathCreationFile)
         {
             // Создаем копию шаблона
             System.IO.File.Copy(_pathTemplateFile, pathCreationFile, true);
@@ -57,43 +98,12 @@ namespace FormationOfDocuments.Services.DocumetsHandlers
             {
                 foreach (var item in items)
                 {
-                    // Ищем закладку по имени в новом файле
-                    var bookmarkStart = FindBookmark(doc.MainDocumentPart.Document.Body, item.NameFields);
-
-                    if (bookmarkStart != null)
-                    {
-                        // Очищаем содержимое закладки и добавляем новый текст
-                        bookmarkStart.Parent.Descendants<BookmarkEnd>()
-                            .Where(b => b.Id == bookmarkStart.Id)
-                            .FirstOrDefault()?.Remove();
-
-                        bookmarkStart.Parent.InsertAfter(
-                            new Run(new Text(item.Content)),
-                            bookmarkStart
-                        );
-                    }
-                    else
-                    {
-                        Console.WriteLine("Закладка не найдена: " + item.NameFields);
-                    }
+                    item.WriteContentFile(doc);
                 }
 
-                // Сохраняем файл после всех изменений
                 doc.MainDocumentPart.Document.Save();
                 Console.WriteLine("Новый файл создан");
             }
-        }
-        /// <summary>
-        /// Рекурсивная функция для поиска закладки по имени
-        /// </summary>
-        /// <param name="element"></param>
-        /// <param name="bookmarkName"></param>
-        /// <returns></returns>
-        static BookmarkStart FindBookmark(OpenXmlElement element, string bookmarkName)
-        {
-            return element.Descendants<BookmarkStart>()
-                .Where(b => b.Name == bookmarkName)
-                .FirstOrDefault();
         }
     }
 }

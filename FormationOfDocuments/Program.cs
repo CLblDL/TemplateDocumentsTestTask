@@ -28,19 +28,16 @@ namespace FormationOfDocuments
             DocumentHandler documentHandler = new DocumentHandler("C:\\Users\\Daniil\\Desktop\\TestWordTemplate.docx", logger);
             var documents = documentHandler.GetTemplateFields();
 
-            foreach( var document in documents ) 
+            Console.WriteLine("Введите значения для полей:");
+            foreach ( var document in documents ) 
             {
-                Console.WriteLine(document);
+                Console.WriteLine(document.Name);
+                document.Content = Console.ReadLine();
                 Console.WriteLine("--------------");
             }
 
-            List<BookmarkReplacement> items = new List<BookmarkReplacement>()
-            {
-                new BookmarkReplacement("имя", "Daniil"),
-                new BookmarkReplacement("количесвто_лет", "22")           
-            };
 
-            documentHandler.WriteValuesByFields(items, "C:\\Users\\Daniil\\Desktop\\NewTestWordTemplate.docx").Wait();
+            documentHandler.WriteValuesByFields(documents, "C:\\Users\\Daniil\\Desktop\\NewTestWordTemplate.docx").Wait();
        }
     }    
 }

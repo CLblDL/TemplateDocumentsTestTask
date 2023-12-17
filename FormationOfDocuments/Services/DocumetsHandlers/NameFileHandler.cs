@@ -1,4 +1,5 @@
-﻿using FormationOfDocuments.Models;
+﻿using FormationOfDocuments.interfaces;
+using FormationOfDocuments.Models;
 using Serilog;
 
 namespace FormationOfDocuments.Services.DocumetsHandlers
@@ -22,13 +23,13 @@ namespace FormationOfDocuments.Services.DocumetsHandlers
         /// Добавление в список, полей для заполнения
         /// </summary>
         /// <param name="templateFields"></param>
-        public abstract void GetTemplateFields(List<string> templateFields);
+        public abstract void GetTemplateFields(List<IDocumentElement> templateFields);
 
         /// <summary>
         /// Запись значений по полям в шаблон файла
         /// </summary>
         /// <param name="items"></param>
         /// <param name="pathCreationFile"></param>
-        public abstract void WriteValuesByFields(List<BookmarkReplacement> items, string pathCreationFile);
+        public abstract void WriteValuesByFields(List<IDocumentElement> items, string pathCreationFile);
     }
 }

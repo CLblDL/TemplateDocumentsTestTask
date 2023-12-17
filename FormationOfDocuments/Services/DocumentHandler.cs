@@ -3,6 +3,7 @@ using Serilog;
 using FormationOfDocuments.Models;
 using FormationOfDocuments.Services.email;
 using FormationOfDocuments.Services.DocumetsHandlers;
+using FormationOfDocuments.interfaces;
 
 namespace FormationOfDocuments.Services
 {
@@ -10,7 +11,7 @@ namespace FormationOfDocuments.Services
     {
         private string _pathTemplateFile;
         private string _fileExtension;
-        private List<string> _templateFields = new();
+        private List<IDocumentElement> _templateFields = new();
         private NameFileHandler _nameFileHandler;
         private readonly ILogger _logger;
 
@@ -25,7 +26,7 @@ namespace FormationOfDocuments.Services
         /// Возврашает список полей шаблоны для заполнения
         /// </summary>
         // Возршаение списка полей предпологает что с помошью него можно будет отрисовать интерфейс для заполнения полей шаблона 
-        public IEnumerable<string> GetTemplateFields()
+        public List<IDocumentElement> GetTemplateFields()
         {
             _fileExtension = Path.GetExtension(_pathTemplateFile);
             _logger.Information(string.Format("Пользователь выбрал шаблон формата {0}", _fileExtension));
@@ -76,7 +77,7 @@ namespace FormationOfDocuments.Services
         /// </summary>
         /// <param name="items"></param>
         /// <param name="pathCreationFile"></param>
-        public async Task WriteValuesByFields(List<BookmarkReplacement> items, string pathCreationFile)
+        public async Task WriteValuesByFields(List<IDocumentElement> items, string pathCreationFile)
         {
             _nameFileHandler.WriteValuesByFields(items, pathCreationFile);
             _logger.Information("На основе щаблона был создан файл");
@@ -91,7 +92,7 @@ namespace FormationOfDocuments.Services
         /// <param name="subject"></param>
         /// <param name="body"></param>
         /// <returns></returns>
-        public async Task SendByMail(List<BookmarkReplacement> items, MailAddress sender, MailAddress recipient, string subject, string body)
+        public async Task SendByMail(List<IDocumentElement> items, MailAddress sender, MailAddress recipient, string subject, string body)
         {
             // Не успел посмотреть отличается ли отрпавка писем на разлчиные почтовые службы 
             _logger.Information("Попытка отправить документ по почте");
